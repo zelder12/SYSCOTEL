@@ -1,0 +1,1589 @@
+<?php
+session_start();
+include 'php/conexion.php';
+?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYSCOTEL - Tu Tienda de Tecnología</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles2.css">
+  <link rel="stylesheet" href="css/product.css">
+  <link rel="stylesheet" href="css/user.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="shortcut icon" href="img/syscotel.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-...hash..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .featured-sections {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      background-color: rgba(128, 128, 128, 0.1);
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .section {
+      width: calc(33.33% - 20px);
+      margin-bottom: 20px;
+      text-align: center;
+      background-color: rgba(210, 210, 210, 0.226);
+      border-radius: 10px;
+      padding: 20px;
+      transition: transform 0.3s ease;
+      min-width: 300px;
+    }
+
+    .section:hover {
+      transform: scale(1.05);
+    }
+
+    .section a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .section-image {
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .section:hover .section-image img {
+      transform: scale(1.1);
+    }
+
+    .section h2 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .slider {
+      position: relative;
+    }
+
+    .item {
+      position: relative;
+    }
+
+    .slide-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+      font-size: 20px;
+    }
+
+    /* Estilos para el botón flotante de ayuda */
+    .floating-help {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background-color: #1e88e5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      text-decoration: none;
+    }
+
+    .floating-help:hover {
+      transform: scale(1.1);
+      background-color: #1565c0;
+    }
+
+    .floating-help i {
+      color: white;
+      font-size: 24px;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .floating-help {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Estilos para el carrito y contador */
+    .cart-icon {
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .cart-icon i {
+      font-size: 28px;
+      color: #333;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cart-icon:hover i {
+      transform: scale(1.2);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: 3px;
+      right: -8px;
+      background-color: #1e88e5;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 1px 3px rgba(30, 136, 229, 0.2);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cart-icon:hover .cart-count {
+      transform: scale(1.1);
+    }
+
+    /* Estilos para el modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      font-family: Arial, sans-serif;
+      text-align: left;
+      border-radius: 8px;
+    }
+
+    .quickView-bg {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 6px;
+    }
+
+    .quickView-details h2 {
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .quickView-details p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .modal-quantity-controls {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal-quantity-controls label {
+      margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-quantity-modal {
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-quantity-modal:hover {
+      background-color: #1565c0;
+    }
+
+    .quantity-input {
+      width: 60px;
+      text-align: center;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+    }
+
+    .btn-add-cart {
+      --background: #4CAF50;
+      --text: #fff;
+      position: relative;
+      border: none;
+      background: none;
+      padding: 10px 28px;
+      border-radius: 10px;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: center;
+      min-width: 144px;
+      height: 45px;
+      color: var(--text);
+      background: var(--background);
+      transition: .3s ease-in-out;
+      font-family: Arial, sans-serif;
+    }
+
+    .btn-add-cart:hover {
+      background-color: #45a049;
+    }
+
+    .btn-add-cart:active {
+      transform: scale(.95);
+    }
+
+    .btn-add-cart span {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 50%;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      transform: translate(-50%, -50%);
+      transition: .3s ease-in-out;
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    .btn-add-cart span.add-to-cart {
+      opacity: 1;
+    }
+
+    .btn-add-cart span.added {
+      opacity: 0;
+    }
+
+    .btn-add-cart .cart {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: -10%;
+      font-size: 18px;
+      transform: translate(-50%, -50%);
+    }
+
+    .btn-add-cart .box {
+      position: absolute;
+      z-index: 3;
+      top: -20%;
+      left: 52%;
+      font-size: 16px;
+      transform: translate(-50%, -50%);
+    }
+
+    .btn-add-cart.loading .cart {
+      animation: cart 1.5s ease-in-out forwards;
+    }
+
+    .btn-add-cart.loading .box {
+      animation: box 1.5s ease-in-out forwards;
+    }
+
+    .btn-add-cart.loading span.add-to-cart {
+      animation: txt1 1.5s ease-in-out forwards;
+    }
+
+    .btn-add-cart.loading span.added {
+      animation: txt2 1.5s ease-in-out forwards;
+    }
+
+    @keyframes cart {
+      0% {
+        left: -10%;
+      }
+      40%, 60% {
+        left: 50%;
+      }
+      100% {
+        left: 110%;
+      }
+    }
+
+    @keyframes box {
+      0%, 40% {
+        top: -20%;
+      }
+      60% {
+        top: 40%;
+        left: 52%;
+      }
+      100% {
+        top: 40%;
+        left: 112%;
+      }
+    }
+
+    @keyframes txt1 {
+      0% {
+        opacity: 1;
+      }
+      20%, 100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes txt2 {
+      0%, 80% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .image-controls {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+
+    .image-control-btn {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+    }
+
+    .image-control-btn:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #quickViewImageContainer {
+      position: relative;
+    }
+
+    .carousel-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 500px;
+    }
+
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      text-decoration: none;
+      display: block;
+    }
+
+    .carousel-item.active {
+      opacity: 1;
+    }
+
+    .carousel-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background-color: #f5f5f5;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-align: left;
+    }
+
+    .carousel-caption h2 {
+      font-size: 28px;
+      font-weight: bold;
+      color: #000;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .carousel-caption p {
+      font-size: 20px;
+      color: #000;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .carousel-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .carousel-control:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-control.prev {
+      left: 20px;
+    }
+
+    .carousel-control.next {
+      right: 20px;
+    }
+
+    .carousel-control i {
+      color: #1e88e5;
+      font-size: 50px;
+      text-shadow: 0 0 10px rgba(30, 136, 229, 0.3);
+    }
+
+    .carousel-control:hover i {
+      color: #1565c0;
+      text-shadow: 0 0 15px rgba(30, 136, 229, 0.5);
+    }
+
+    .carousel-indicators {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 15px;
+      backdrop-filter: blur(4px);
+    }
+
+    .indicator {
+      width: 35px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 3px;
+      border-radius: 1.5px;
+    }
+
+    .indicator:hover {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
+
+    .indicator.active {
+      background: rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-cart {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-options {
+      position: absolute;
+      right: 20px;
+      top: 50px;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+      min-width: 200px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      transform-origin: top right;
+      animation: menuAppear 0.3s ease-out;
+    }
+
+    @keyframes menuAppear {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .btn-login, .btn-register, .btn-logout {
+      display: flex;
+      align-items: center;
+      padding: 8px 15px;
+      margin: 6px 0;
+      text-align: left;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(135deg, #45a049, #3d8b40);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+    }
+
+    .btn-register:hover {
+      background: linear-gradient(135deg, #1976D2, #1565C0);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn-logout {
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 68, 68, 0.2);
+    }
+
+    .btn-logout:hover {
+      background: linear-gradient(135deg, #cc0000, #b30000);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 68, 68, 0.3);
+    }
+
+    .btn-login:active, .btn-register:active, .btn-logout:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-login i, .btn-register i, .btn-logout i {
+      font-size: 16px;
+      margin-right: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-login:hover i, .btn-register:hover i, .btn-logout:hover i {
+      transform: scale(1.1);
+    }
+
+    .me-2 {
+      margin-right: 12px;
+    }
+
+    .search-cart a[onclick="toggleUserOptions()"] {
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .search-cart a[onclick="toggleUserOptions()"]:hover {
+      transform: scale(1.1);
+    }
+
+    .search-cart a[onclick="toggleUserOptions()"] i {
+      font-size: 28px;
+      transition: all 0.3s ease;
+    }
+
+    .search-cart a[onclick="toggleUserOptions()"]:hover i {
+      color: #1e88e5;
+    }
+
+    /* Efecto de brillo al pasar el mouse */
+    .btn-login::after, .btn-register::after, .btn-logout::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      transform: rotate(45deg);
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    .btn-login:hover::after, .btn-register:hover::after, .btn-logout:hover::after {
+      opacity: 1;
+      animation: shine 1.5s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateX(100%) rotate(45deg);
+      }
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .cart-animation {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform;
+      animation: cartFly 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes cartFly {
+      0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(0.8) translate(var(--target-x), var(--target-y));
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(0.4) translate(var(--target-x), var(--target-y));
+        opacity: 0;
+      }
+    }
+
+    .cart-animation img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="wrapper">
+        <div class="logo">
+          <a href="index.php">
+            <img src="img/syscotel.png" alt="Syscotel Logo">syscotel</a>
+        </div>
+        <ul class="nav-links">
+          <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
+          <li><a href="index.php">Inicio</a></li>
+          <li>
+            <a href="#" class="desktop-item">Secciones</a>
+            <input type="checkbox" id="showDrop">
+            <label for="showDrop" class="mobile-item">Secciones</label>
+            <ul class="drop-menu">
+              <li><a href="gaming.php">Gaming</a></li>
+              <li><a href="varios.php">Varios</a></li>
+              <li><a href="moviles.php">Moviles</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#" class="desktop-item">Apartados</a>
+            <input type="checkbox" id="showMega">
+            <div class="mega-box">
+              <div class="content">
+                <div class="row">
+                  <img src="https://cdn.computerhoy.com/sites/navi.axelspringer.es/public/media/image/2021/10/persona-jugando-pc-gaming-teclado-raton-rgb-2494995.jpg"
+                    alt="">
+                </div>
+                <div class="row">
+                  <header>Gaming</header>
+                  <ul class="mega-links">
+                    <li><a href="gaming.php#perifericos">Perifericos</a></li>
+                    <li><a href="gaming.php#consolas">Consolas</a></li>
+                    <li><a href="gaming.php#equipos">Equipos gamer</a></li>
+                  </ul>
+                </div>
+                <div class="row">
+                  <header>Varios</header>
+                  <ul class="mega-links">
+                    <li><a href="varios.php#seguridad">Seguridad</a></li>
+                    <li><a href="varios.php#unidades">Unidades de Red</a></li>
+                    <li><a href="varios.php#varios">Varios</a></li>
+                  </ul>
+                </div>
+                <div class="row">
+                  <header>Móviles</header>
+                  <ul class="mega-links">
+                    <li><a href="moviles.php#audifonos">Audífonos</a></li>
+                    <li><a href="moviles.php#celulares">Celulares</a></li>
+                    <li><a href="moviles.php#gadgets">Gadgets</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+          <div class="search-cart">
+            <a href="#" onclick="toggleUserOptions()">
+              <i class="fas fa-user" style="color: black;"></i>
+            </a>
+          </div>
+          <div class="user-options" id="userOptions">
+            <?php if (isset($_SESSION['nombre'])): ?>
+              <a href="#" onclick="logout()" class="btn-logout">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+              </a>
+            <?php else: ?>
+              <a href="php/login.php" class="btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+              </a>
+              <a href="php/registrar.php" class="btn-register">
+                <i class="fas fa-user-plus me-2"></i>Registrarse
+              </a>
+            <?php endif; ?>
+          </div>
+          <div class="search-cart">
+            <a href="carrito.php" class="cart-icon" <?php if(basename($_SERVER['PHP_SELF']) == 'carrito.php') echo 'style="display: none;"'; ?>>
+              <i class="fas fa-shopping-cart"></i>
+              <span class="cart-count">0</span>
+            </a>
+          </div>
+        </ul>
+      </div>
+    </nav>
+    <script>
+      var lastScrollTop = 0;
+
+      window.addEventListener("scroll", function () {
+        var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (currentScroll > lastScrollTop && currentScroll > 70) {
+          document.querySelector("nav").style.top = "-70px";
+        } else {
+          document.querySelector("nav").style.top = "0";
+        }
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+      }, false);
+
+      function toggleUserOptions() {
+        var userOptions = document.getElementById("userOptions");
+        if (userOptions.style.display === "block") {
+          userOptions.style.display = "none";
+        } else {
+          userOptions.style.display = "block";
+        }
+      }
+
+      function logout() {
+        window.location.href = "php/logout.php";
+      }
+
+      document.addEventListener('click', function(event) {
+        var userOptions = document.getElementById("userOptions");
+        var userIcon = document.querySelector('.search-cart a[onclick="toggleUserOptions()"]');
+        
+        if (userOptions.style.display === "block" && 
+            !userOptions.contains(event.target) && 
+            !userIcon.contains(event.target)) {
+          userOptions.style.display = "none";
+        }
+      });
+    </script>
+  </header>
+
+  <main class="main-content">
+    <div class="welcome-section" id="welcomeSection" style="text-align: center; padding: 40px 0; transition: all 0.3s ease;">
+      <?php if (isset($_SESSION['nombre'])): ?>
+        <div class="user-welcome" style="font-size: 2.5em; color: #1e88e5; font-weight: bold;">
+          <i class="fas fa-user-circle"></i> ¡Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?>!
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <div class="carousel-container">
+      <div class="carousel">
+        <div class="carousel-inner">
+          <a href="gaming.php" class="carousel-item active">
+            <img src="img/slider/image (2).jpg" alt="Periféricos Gaming">
+            <div class="carousel-caption">
+              <h2>Periféricos Gaming</h2>
+            </div>
+          </a>
+          <a href="gaming.php" class="carousel-item">
+            <img src="img/slider/ps5.webp" alt="Equipos de sobremesa">
+            <div class="carousel-caption">
+              <h2>Equipos de sobremesa</h2>
+            </div>
+          </a>
+          <a href="gaming.php" class="carousel-item">
+            <img src="img/slider/switch.jpg" alt="Equipos Gaming">
+            <div class="carousel-caption">
+              <h2>Equipos Gaming</h2>
+            </div>
+          </a>
+          <a href="gaming.php" class="carousel-item">
+            <img src="img/slider/laptop.jpg" alt="Laptops Gaming">
+            <div class="carousel-caption">
+              <h2>Laptops Gaming</h2>
+            </div>
+          </a>
+          <a href="moviles.php" class="carousel-item">
+            <img src="img/slider/cel.png" alt="Gadgets">
+            <div class="carousel-caption">
+              <h2>Gadgets</h2>
+            </div>
+          </a>
+        </div>
+        <button class="carousel-control prev" onclick="changeSlide(-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carousel-control next" onclick="changeSlide(1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="carousel-indicators">
+          <button class="indicator active" onclick="goToSlide(0)"></button>
+          <button class="indicator" onclick="goToSlide(1)"></button>
+          <button class="indicator" onclick="goToSlide(2)"></button>
+          <button class="indicator" onclick="goToSlide(3)"></button>
+          <button class="indicator" onclick="goToSlide(4)"></button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="container specials" data-aos="fade-up">
+  <br><br><br><br><br>
+    <h1 class="heading-1">Secciones populares</h1>
+    <br>
+    <br>
+    <div class="featured-sections">
+      <div class="section">
+        <a href="gaming.php#perifericos">
+          <div class="section-image">
+            <img src="img/games.jpg" alt="Juegos">
+          </div>
+          <h2>Perifericos gaming</h2>
+        </a>
+      </div>
+
+      <div class="section">
+        <a href="varios.php#seguridad">
+          <div class="section-image">
+            <img src="img/movil.jpeg" alt="Accesorios Móviles">
+          </div>
+          <h2>Seguridad</h2>
+        </a>
+      </div> 
+
+      <div class="section">
+        <a href="moviles.php#celulares">
+          <div class="section-image">
+            <img src="img/peri.webp" alt="Periféricos">
+          </div>
+          <h2>Celulares</h2>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de productos populares -->
+  <section class="container specials" data-aos="fade-up">
+    <h1 class="heading-1">Productos Populares</h1>
+    <br>
+    <div class="container-products" data-aos="fade-up">
+      <?php
+      // Consulta directa y simple para obtener todos los productos populares
+      $sql = "SELECT * FROM productos WHERE es_popular = 1 ORDER BY id DESC";
+      $result = $conn->query($sql);
+
+      if ($result && $result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+              $stock = isset($row['stock']) ? (int)$row['stock'] : 0;
+              $nombre_escapado = addslashes($row['nombre']);
+              $descripcion_escapada = addslashes($row['descripcion']);
+              $click = $stock > 0 ? "onclick='showQuickView(\"{$nombre_escapado}\", \"{$descripcion_escapada}\", \"{$row['precio']}\", \"{$row['imagen']}\", \"{$row['seccion']}\", \"{$row['id']}\")'" : '';
+              
+              // Determinar la ruta de la imagen según la sección
+              $ruta_imagen = 'img/';
+              switch (strtolower($row['seccion'])) {
+                  case 'perifericos': $ruta_imagen .= 'perifericos/'; break;
+                  case 'consolas': $ruta_imagen .= 'consolas/'; break;
+                  case 'equipos': $ruta_imagen .= 'equipos/'; break;
+                  case 'audifonos': $ruta_imagen .= 'audifonos/'; break;
+                  case 'celulares': $ruta_imagen .= 'celulares/'; break;
+                  case 'gadgets': $ruta_imagen .= 'gadgets/'; break;
+                  case 'seguridad': $ruta_imagen .= 'seguridad/'; break;
+                  case 'unidades': $ruta_imagen .= 'unidades/'; break;
+                  case 'varios': $ruta_imagen .= 'varios/'; break;
+                  case 'accesorios': $ruta_imagen .= 'accesorios/'; break;
+                  case 'otros': $ruta_imagen .= 'otros/'; break;
+                  default: $ruta_imagen .= strtolower($row['seccion']) . '/'; break;
+              }
+              $ruta_imagen .= !empty($row['imagen']) ? $row['imagen'] : 'placeholder.jpg';
+              
+              echo "<div class='card-product' $click>";
+              echo "<div class='container-img'>";
+              echo "<img class='dynamic-image' src='$ruta_imagen' alt='" . $row['nombre'] . "' />";
+              if ($stock == 0) {
+                  echo "<img src='img/out_of_stock.png' alt='Sin stock' style='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background-color:rgba(255,255,255,0.7);z-index:10;'>";
+              }
+              echo "</div>";
+              echo "<div class='content-card-product'>";
+              $nombre = $row['nombre'];
+              if (strlen($nombre) > 40) {
+                  $nombre = substr($nombre, 0, 40) . '...';
+              }
+              echo "<h3>" . $nombre . "</h3>";
+              echo "<p class='price'>$" . $row['precio'] . "</p>";
+              echo "<p style='color:#888;font-size:0.95em;'>Stock: $stock</p>";
+              echo "</div>";
+              echo "</div>";
+          }
+      } else {
+          echo "<p class='no-products-message'>No se encontraron productos destacados</p>";
+      }
+      ?>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-section about">
+        <h3>syscotel</h3>
+        <p>Bienvenido a syscotel, tu destino definitivo para todo lo relacionado con la electrónica y la tecnología de vanguardia. syscotel se destaca como un oasis de innovación en un mundo digital en constante evolución.</p>
+      </div>
+      <div class="footer-section contact">
+        <h3>Contáctanos</h3>
+        <ul>
+          <li><i class="fas fa-phone"></i> (+503) 7850-8218</li>
+          <li><i class="fas fa-envelope"></i> syscotel@gmail.com</li>
+          <li><i class="fas fa-map-marker-alt"></i> Calle Principal, Ciudad, Principal</li>
+        </ul>
+      </div>
+      <div class="footer-section social">
+        <h3>Síguenos</h3>
+        <div class="flex justify-center space-x-5">
+          <a href="https://www.facebook.com/syscotel.sanmiguel.1" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.icons8.com/fluent/30/000000/facebook-new.png" alt="Facebook" />
+          </a>
+          <a href="https://www.instagram.com/syscotel_sm/?hl=es-la" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.icons8.com/fluent/30/000000/instagram-new.png" alt="Instagram" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <p>&copy; 2025 syscotel. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <a href="about_us.php" class="floating-help" title="Acerca de SYSCOTEL">
+    <i class="fas fa-question"></i>
+  </a>
+
+  <!-- Modal de vista rápida -->
+  <div id="quickView" class="modal" onclick="closeQuickView()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="quickView-bg">
+        <div id="quickViewImageContainer" class="container-img">
+          <div id="quickViewImage"></div>
+          <div class="image-controls">
+            <button id="prevImage" class="image-control-btn" onclick="changeModalImage(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button id="nextImage" class="image-control-btn" onclick="changeModalImage(1)"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="quickView-details">
+          <h2 id="quickViewTitle"></h2>
+          <p id="quickViewDescription"></p>
+          <p id="quickViewPrice"></p>
+          <input type="hidden" id="quickViewProductId" value="">
+          <div class="modal-quantity-controls">
+            <label for="modalQuantity">Cantidad:</label>
+            <div class="quantity-selector">
+              <button class="btn-quantity-modal" onclick="decrementModalQuantity()">-</button>
+              <input type="number" id="modalQuantity" class="quantity-input" value="1" min="1" max="99">
+              <button class="btn-quantity-modal" onclick="incrementModalQuantity()">+</button>
+            </div>
+          </div>
+          <div class="btn-container">
+            <button onclick="quickViewAddToCart()" class="btn-add-cart">
+              <span class="add-to-cart">Agregar al carrito</span>
+              <span class="added">¡Agregado!</span>
+              <i class="fas fa-shopping-cart cart"></i>
+              <i class="fas fa-box box"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    AOS.init();
+
+    let currentImages = [];
+    let currentImageIndex = 0;
+    let cartCount = 0;
+    let isAnimating = false;
+    let currentSlide = 0;
+    let isTransitioning = false;
+    const slides = document.querySelectorAll('.carousel-item');
+    const indicators = document.querySelectorAll('.indicator');
+    const totalSlides = slides.length;
+
+    // Función para actualizar el contador del carrito
+    function updateCartCount(animate = false) {
+      const cartCountElement = document.querySelector('.cart-count');
+      if (cartCountElement) {
+        cartCountElement.textContent = cartCount;
+        if (animate) {
+          cartCountElement.style.transform = 'scale(1.2)';
+          setTimeout(() => {
+            cartCountElement.style.transform = 'scale(1)';
+          }, 200);
+        }
+      }
+    }
+
+    // Agregar evento a todos los botones de agregar al carrito
+    document.addEventListener('DOMContentLoaded', function() {
+      const addToCartButtons = document.querySelectorAll('.btn-add-cart');
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          if (!button.classList.contains('loading')) {
+            button.classList.add('loading');
+            setTimeout(() => button.classList.remove('loading'), 3700);
+          }
+        });
+      });
+
+      // Obtener el contador inicial del carrito
+      fetch('php/obtener_cantidad_carrito.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            cartCount = parseInt(data.cantidad) || 0;
+            updateCartCount(false);
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener la cantidad del carrito:', error);
+        });
+
+      // Controlar la visibilidad del saludo según el scroll
+      var lastScrollTop = 0;
+      const welcomeSection = document.getElementById('welcomeSection');
+
+      window.addEventListener("scroll", function() {
+        var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (currentScroll > lastScrollTop && currentScroll > 70) {
+          document.querySelector("nav").style.top = "-70px";
+        } else {
+          document.querySelector("nav").style.top = "0";
+        }
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+      }, false);
+
+      // Mantener la posición del scroll al refrescar
+      if (window.history.scrollRestoration) {
+        window.history.scrollRestoration = 'manual';
+      }
+
+      // Guardar la posición del scroll antes de refrescar
+      window.addEventListener('beforeunload', function() {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+      });
+
+      // Restaurar la posición del scroll después de cargar
+      const scrollPosition = sessionStorage.getItem('scrollPosition');
+      if (scrollPosition) {
+        window.scrollTo(0, scrollPosition);
+        sessionStorage.removeItem('scrollPosition');
+      }
+      
+      // Inicializar carrusel y manejo de clics
+      initCarousel();
+    });
+
+    function incrementModalQuantity() {
+      const input = document.getElementById('modalQuantity');
+      const currentValue = parseInt(input.value);
+      if (currentValue < 99) {
+        input.value = currentValue + 1;
+      }
+    }
+
+    function decrementModalQuantity() {
+      const input = document.getElementById('modalQuantity');
+      const currentValue = parseInt(input.value);
+      if (currentValue > 1) {
+        input.value = currentValue - 1;
+      }
+    }
+
+    function showQuickView(title, description, price, image, seccion, id) {
+      document.getElementById('modalQuantity').value = 1;
+      
+      fetch('php/obtener_imagenes.php?id=' + id)
+        .then(response => {
+          // Verificar si la respuesta es correcta
+          if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.status);
+          }
+          // Intentar parsear como JSON, capturando errores
+          return response.text().then(text => {
+            try {
+              return JSON.parse(text);
+            } catch (e) {
+              console.error('Error al parsear JSON. Respuesta recibida:', text);
+              throw new Error('Respuesta no válida del servidor');
+            }
+          });
+        })
+        .then(data => {
+          if (data.status === 'success') {
+            currentImages = data.imagenes;
+            currentImageIndex = 0;
+            
+            var imagePath = 'img/';
+            switch (seccion.toLowerCase()) {
+              case 'perifericos': imagePath += 'perifericos/'; break;
+              case 'consolas': imagePath += 'consolas/'; break;
+              case 'equipos': imagePath += 'equipos/'; break;
+              case 'audifonos': imagePath += 'audifonos/'; break;
+              case 'celulares': imagePath += 'celulares/'; break;
+              case 'gadgets': imagePath += 'gadgets/'; break;
+              case 'seguridad': imagePath += 'seguridad/'; break;
+              case 'unidades': imagePath += 'unidades/'; break;
+              case 'varios': imagePath += 'varios/'; break;
+              case 'accesorios': imagePath += 'accesorios/'; break;
+              case 'otros': imagePath += 'otros/'; break;
+              default: imagePath += seccion.toLowerCase() + '/'; break;
+            }
+            
+            document.getElementById('quickViewTitle').innerText = title;
+            document.getElementById('quickViewDescription').innerText = description;
+            document.getElementById('quickViewPrice').innerText = 'Precio: $' + price;
+            document.getElementById('quickViewProductId').value = id;
+            
+            updateModalImage(imagePath);
+            
+            const controls = document.querySelector('.image-controls');
+            if (currentImages.length <= 1) {
+              controls.style.display = 'none';
+            } else {
+              controls.style.display = 'flex';
+            }
+            
+            document.getElementById('quickView').style.display = 'block';
+          } else {
+            console.error('Error al obtener imágenes:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Mostrar un mensaje de error al usuario
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudieron cargar las imágenes del producto'
+          });
+        });
+    }
+
+    function updateModalImage(basePath) {
+      if (currentImages.length > 0) {
+        var quickViewImage = document.getElementById('quickViewImage');
+        quickViewImage.innerHTML = "<img class='dynamic-image' src='" + basePath + currentImages[currentImageIndex] + "' alt='Imagen del producto' />";
+      }
+    }
+
+    function closeQuickView() {
+      document.getElementById('quickView').style.display = 'none';
+    }
+
+    function quickViewAddToCart() {
+      <?php if (!isset($_SESSION['nombre'])): ?>
+        Swal.fire({
+          icon: 'error',
+          title: '<span style="font-size: 28px;">Inicia sesión</span>',
+          html: '<div style="font-size: 20px;">Debes iniciar sesión para agregar productos al carrito</div>',
+          confirmButtonColor: '#007bff',
+          confirmButtonText: '<span style="font-size: 18px;">Iniciar sesión</span>',
+          showCancelButton: true,
+          cancelButtonText: '<span style="font-size: 18px;">Cancelar</span>',
+          customClass: {
+            popup: 'swal-large-text'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'php/login.php';
+          }
+        });
+        return;
+      <?php endif; ?>
+
+      if (isAnimating) return;
+
+      const id = document.getElementById('quickViewProductId').value;
+      const quantity = parseInt(document.getElementById('modalQuantity').value);
+      const modal = document.getElementById('quickView');
+      const addToCartButton = modal.querySelector('.btn-add-cart');
+      
+      if (isNaN(quantity) || quantity < 1) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+        
+        Toast.fire({
+          icon: 'error',
+          title: 'La cantidad debe ser un número mayor a 0'
+        });
+        return;
+      }
+
+      // Bloquear el botón y la animación inmediatamente
+      isAnimating = true;
+      addToCartButton.classList.add('loading');
+      addToCartButton.style.pointerEvents = 'none';
+
+      // Verificar si el modal está visible
+      const isModalVisible = modal.style.display === 'block';
+      let animationTimeout;
+      let closeTimeout;
+
+      // Función para detener la animación y restaurar el botón
+      const stopAnimation = () => {
+        isAnimating = false;
+        addToCartButton.classList.remove('loading');
+        addToCartButton.style.pointerEvents = 'auto';
+        if (animationTimeout) clearTimeout(animationTimeout);
+        if (closeTimeout) clearTimeout(closeTimeout);
+      };
+
+      // Agregar evento para detectar cuando el modal se cierra
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'style') {
+            const display = modal.style.display;
+            if (display === 'none') {
+              stopAnimation();
+              observer.disconnect();
+            }
+          }
+        });
+      });
+
+      observer.observe(modal, { attributes: true });
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'php/agregar_carrito.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.status === 'success') {
+              // Incrementar el contador del carrito
+              cartCount += quantity;
+              updateCartCount(isModalVisible);
+
+              // Mostrar notificación toast
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              
+              Toast.fire({
+                icon: 'success',
+                title: 'Se han agregado ' + quantity + ' unidad(es) al carrito'
+              });
+
+              // Si el modal está visible, esperar a que termine la animación antes de cerrarlo
+              if (isModalVisible) {
+                animationTimeout = setTimeout(() => {
+                  stopAnimation();
+                  closeTimeout = setTimeout(() => {
+                    closeQuickView();
+                  }, 500);
+                }, 1500);
+              } else {
+                stopAnimation();
+              }
+            } else {
+              // Si hay error, mostrar el mensaje y restaurar el estado
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              
+              Toast.fire({
+                icon: 'error',
+                title: response.message || 'No se pudo agregar el producto'
+              });
+
+              stopAnimation();
+            }
+          } catch (e) {
+            console.error('Error al parsear la respuesta:', e);
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true
+            });
+            
+            Toast.fire({
+              icon: 'error',
+              title: 'Error al procesar la respuesta del servidor'
+            });
+
+            stopAnimation();
+          }
+        }
+      };
+      
+      xhr.onerror = function() {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+        
+        Toast.fire({
+          icon: 'error',
+          title: 'Error de conexión con el servidor'
+        });
+
+        stopAnimation();
+      };
+      
+      xhr.send('producto_id=' + id + '&cantidad=' + quantity);
+    }
+
+    function updateIndicators() {
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+      });
+    }
+
+    function changeSlide(direction) {
+      if (isTransitioning) return;
+      
+      isTransitioning = true;
+      slides[currentSlide].classList.remove('active');
+      
+      currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+      slides[currentSlide].classList.add('active');
+      updateIndicators();
+      
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 250);
+    }
+
+    function goToSlide(index) {
+      if (isTransitioning || currentSlide === index) return;
+      
+      isTransitioning = true;
+      slides[currentSlide].classList.remove('active');
+      
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      updateIndicators();
+      
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 250);
+    }
+
+    // Función para inicializar el carrusel y el manejo de clics
+    function initCarousel() {
+      // Asegurarse de que el primer slide esté activo al cargar
+      if(slides.length > 0) {
+        slides[0].classList.add('active');
+        indicators[0].classList.add('active');
+      }
+      
+      // Desactivar los enlaces por defecto para evitar navegación automática
+      slides.forEach(slide => {
+        slide.addEventListener('click', function(e) {
+          // Siempre prevenir el comportamiento predeterminado del enlace
+          e.preventDefault();
+        });
+      });
+      
+      // Agregar evento de clic al contenedor del carrusel
+      const carousel = document.querySelector('.carousel');
+      carousel.addEventListener('click', function(e) {
+        // Si se hizo clic en un control o indicador, no hacer nada
+        if (e.target.closest('.carousel-control') || e.target.closest('.carousel-indicators')) {
+          return;
+        }
+        
+        // Obtener el slide activo actual
+        const activeSlide = document.querySelector('.carousel-item.active');
+        if (activeSlide) {
+          // Obtener el href específico de este slide activo
+          const href = activeSlide.getAttribute('href');
+          console.log('Redirigiendo a:', href); // Para depuración
+          if (href) {
+            // Redirigir a la URL del slide activo
+            window.location.href = href;
+          }
+        }
+      });
+      
+      // Iniciar auto-play
+      setInterval(() => {
+        if (!isTransitioning) {
+          changeSlide(1);
+        }
+      }, 7000); // 7 segundos
+    }
+
+    // Control con teclas (opcional)
+    document.addEventListener('keydown', (e) => {
+      if (isTransitioning) return;
+      
+      if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      } else if (e.key === 'ArrowRight') {
+        changeSlide(1);
+      }
+    });
+
+  </script>
+  <a href="about_us.php" class="floating-help" title="Acerca de SYSCOTEL">
+    <i class="fas fa-question"></i>
+  </a>
+</body>
+
+</html>
+

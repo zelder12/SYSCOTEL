@@ -1,0 +1,104 @@
+/* Estilos para mensajes de "No hay productos" */
+.no-products-message {
+    text-align: center;
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Estilos para el botón "Seguir comprando" */
+.btn-continue-shopping {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.btn-continue-shopping:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-continue-shopping i {
+    margin-right: 8px;
+}
+
+.continue-shopping {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Estilos para el total del carrito */
+.cart-total {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.total-amount {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+.btn-checkout {
+    padding: 15px 30px;
+    background-color: #ff9900;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-checkout:hover {
+    background-color: #e68a00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilos para SweetAlert2 */
+.swal-large-text {
+    font-size: 18px !important;
+}
+
+.swal2-popup {
+    font-size: 1.2em !important;
+}
+
+.swal2-title {
+    font-size: 1.8em !important;
+}
+
+.swal2-content {
+    font-size: 1.2em !important;
+}
+
+.swal2-styled {
+    font-size: 1.1em !important;
+    padding: 12px 25px !important;
+}

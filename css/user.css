@@ -1,0 +1,16 @@
+.user-options {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+
+  .user-options a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    margin-bottom: 5px;
+  }
